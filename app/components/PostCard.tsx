@@ -1,6 +1,15 @@
-import { Copy, Clock } from 'lucide-react';
+import { Copy, Clock, Copy as CopyIcon } from 'lucide-react';
+import { useState } from 'react';
 
 export function PostCard({ post, onDuplicate }: any) {
+  const [copied, setCopied] = useState(false);
+
+  const copyPostId = () => {
+    navigator.clipboard.writeText(post.post_id || post.id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const date = new Date(post.published_at);
   const dateStr = date.toLocaleDateString('pt-BR');
   const timeStr = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -14,6 +23,14 @@ export function PostCard({ post, onDuplicate }: any) {
           <Clock size={14} />
           <span>{dateStr} às {timeStr}</span>
         </div>
+        <button
+          onClick={copyPostId}
+          className="mt-2 text-xs text-gray-400 hover:text-orange-400 flex items-center gap-1 transition"
+        >
+          <CopyIcon size={12} />
+          ID: {post.post_id ? post.post_id.slice(0, 10) + '...' : post.id.slice(0, 10) + '...'}
+          {copied && <span className="text-green-400">✓</span>}
+        </button>
       </div>
       <button
         onClick={() => onDuplicate(post)}
