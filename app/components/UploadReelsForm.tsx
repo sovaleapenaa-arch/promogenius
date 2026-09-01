@@ -32,7 +32,7 @@ export default function UploadReelsForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!video || !productName || !affiliateUrl || !caption || !scheduledAt) {
       setMessage({ type: 'error', text: 'Preencha todos os campos' });
       return;
@@ -58,8 +58,9 @@ export default function UploadReelsForm() {
       // 2. Gerar video_url pública
       const video_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/reels/${filename}`;
 
-      // 3. Converter scheduled_at para UTC (o input datetime-local vem em horário local do navegador)
+      // 3. Converter scheduled_at de PT-BR para UTC (soma 3 horas)
       const scheduledDate = new Date(scheduledAt);
+      scheduledDate.setHours(scheduledDate.getHours() + 3);
       const scheduledAtUTC = scheduledDate.toISOString();
 
       // 4. POST webhook com APENAS campos necessários
@@ -87,9 +88,9 @@ export default function UploadReelsForm() {
       setCaption('');
       setScheduledAt('');
     } catch (error) {
-      setMessage({ 
-        type: 'error', 
-        text: error instanceof Error ? error.message : 'Erro ao processar' 
+      setMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Erro ao processar'
       });
     } finally {
       setLoading(false);
@@ -171,11 +172,10 @@ export default function UploadReelsForm() {
 
           {/* Mensagem */}
           {message && (
-            <div className={`flex items-center gap-2 p-4 rounded ${
-              message.type === 'success' 
-                ? 'bg-green-900/20 text-green-300 border border-green-600/20' 
+            <div className={`flex items-center gap-2 p-4 rounded ${message.type === 'success'
+                ? 'bg-green-900/20 text-green-300 border border-green-600/20'
                 : 'bg-red-900/20 text-red-300 border border-red-600/20'
-            }`}>
+              }`}>
               {message.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
               {message.text}
             </div>
