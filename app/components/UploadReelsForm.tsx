@@ -60,7 +60,7 @@ export default function UploadReelsForm() {
 
       // 3. Converter scheduled_at de PT-BR para UTC (soma 3 horas)
       const scheduledDate = new Date(scheduledAt);
-      scheduledDate.setHours(scheduledDate.getHours() + 3);
+      scheduledDate.setHours(scheduledDate.getHours() - 3);
       const scheduledAtUTC = scheduledDate.toISOString();
 
       // 4. POST webhook com APENAS campos necessários
